@@ -1,0 +1,18 @@
+{
+    // 日本語訳に使用するAPI
+    "API_PARAM_JP":     "generalPT_pt_ja",  //ポルトガル語→日本語
+    //"API_PARAM_JP":     "generalPT_de_ja",  //ドイツ語→日本語
+
+    // 英訳に使用するAPI
+    "API_PARAM_ENG":    "generalNT_pt_en",  //ポルトガル語→英語
+    //"API_PARAM_ENG":    "generalNT_de_en",  //ドイツ語→英語
+
+    // みんなの自動翻訳：https://mt-auto-minhon-mlt.ucri.jgn-x.jp/
+    // にログインして以下の値を調べる
+    // ログイン名
+    "NAME":     "",
+    // API KEY
+    "KEY":      "",
+    // API SECRET
+    "SECRET":   ""
+}

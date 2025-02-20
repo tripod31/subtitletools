@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+import argparse
+from lib.common import InputData,InputBase
+import pyparsing as pp
+
+"""
+SRT形式ファイルからinput形式excelファイルに変換
+"""
+
+class Process(InputBase):
+    def __init__(self):
+        super().__init__()
+
+    def read_srt(self):
+        """
+        SRT形式ファイルをInputDataのリストに読み込む
+        """
+        with open(args.in_file,encoding='utf-8') as f:
+            data = f.read()
+
+        #parser作成
+        #no      = pp.LineStart()+pp.Word(pp.nums).set_results_name("no")+pp.LineEnd()
+        no      = pp.Word(pp.nums).set_results_name("no")+pp.LineEnd()
+        start   = pp.Word(pp.nums).suppress()+pp.Suppress(":")+pp.Word(pp.nums)("s_min")+pp.Suppress(":")+ \
+            pp.Word(pp.nums)("s_sec")+pp.Suppress(",")+pp.Word(pp.nums).suppress()
+        end     = pp.Word(pp.nums).suppress()+pp.Suppress(":")+pp.Word(pp.nums)("e_min")+pp.Suppress(":")+ \
+            pp.Word(pp.nums)("e_sec")+pp.Suppress(",")+pp.Word(pp.nums).suppress()
+        time_span = start + pp.Suppress("-->") + end
+        lyrics  = pp.OneOrMore(pp.Word(pp.pyparsing_unicode.printables+" "),stop_on=no).set_results_name("lyrics")
+
+        parser = no + time_span+ lyrics
+
+        res = parser.search_string(data)
+
+        #InputDataのリストに読み込む
+        for idx,data in enumerate(res):
+            s_min   = int(data["s_min"])
+            s_sec   = int(data["s_sec"])
+            e_min   = int(data["e_min"])
+            e_sec   = int(data["e_sec"])
+            lyrics  = data["lyrics"].as_list()
+            org     = lyrics[0]
+            jp      = lyrics[1]
+            data = InputData(index=idx+1,
+                             s_min=s_min,s_sec=s_sec,e_min=e_min,e_sec=e_sec,
+                             org=org,eng="",jp=jp)
+            self.in_data_arr.append(data)
+
+    def main(self):
+        self.read_srt()
+        self.out_excel(args)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('in_file'       ,help="入力SRTファイル")    
+    parser.add_argument('out_excel_file',help="出力excelファイル")
+        
+    args = parser.parse_args()
+    print(f"引数：{args}")
+
+    proc = Process()
+    proc.main()

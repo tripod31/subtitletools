@@ -1,0 +1,18 @@
+{
+    "SCRIPTS":{
+        "file2input":   ["org2input.py","trans2input.py","srt2input.py"],
+        "input2file":   ["input2srt.py","input2txt.py"]
+    },
+    "IN_OUTS":{
+        "org2input.py":    {"infile":  "org.txt",
+                            "outfile": "input.xlsx"},
+        "trans2input.py":  {"infile":  "trans.txt",
+                            "outfile": "input.xlsx"},
+        "srt2input.py":    {"infile":  "srt.txt",
+                            "outfile": "input.xlsx"},
+        "input2srt.py":    {"infile":  "input.xlsx",
+                            "outfile": "srt.txt"},
+        "input2txt.py":    {"infile":  "input.xlsx",
+                            "outfile": "blog.txt"}
+    }
+}

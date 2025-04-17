@@ -46,7 +46,34 @@ class Translate:
 
         except Exception as e:
             raise AppException(f"api実行時エラー：{e.str}")
-    
+
+    def read_dict(self)->dict:
+        """
+        前回の途中までの編訳結果ファイルがあれば読み込む
+        """
+                    
+        dic ={}
+        if os.path.exists(DICT_SAVE_PATH):
+            print(f"前回の途中までの編訳結果を使用します：{DICT_SAVE_PATH}")
+            try:
+                with open(DICT_SAVE_PATH,"rb") as f:
+                    dic = pickle.load(f)
+                print(f"前回の途中までの編訳結果を{len(dic)}件読み込みました")
+            except Exception as e:
+                print(f"{DICT_SAVE_PATH}の読み込みに失敗しました：{e}")
+        return dic
+
+    def write_dict(self,dic:dict):
+        """
+        途中までの翻訳結果を保存
+        """
+        try:
+            with open(DICT_SAVE_PATH,"wb") as f:
+                pickle.dump(dic,f)
+            print(f"途中までの編訳結果を保存しました：{DICT_SAVE_PATH}")
+        except Exception as e:
+            print(f"{DICT_SAVE_PATH}の書き込みに失敗しました：{e}")
+
     def make_dict(self,org_lang,langs:list,set_org:set)->dict:
         """
         辞書を作成する。同じ原文は１回の翻訳で済ますため
@@ -61,14 +88,7 @@ class Translate:
             {原文:{翻訳先言語:翻訳結果,},}
         """
         print(f"{len(set_org)}件の原文を翻訳します")
-        dic ={}
-        
-        if os.path.exists(DICT_SAVE_PATH):
-            #前回の途中までの編訳結果ファイルがあれば読み込む
-            print(f"前回の途中までの編訳結果を使用します：{DICT_SAVE_PATH}")
-            with open(DICT_SAVE_PATH,encoding='utf-8') as f:
-               dic = pickle.load(f)
-            print(f"前回の途中までの編訳結果を{len(dic)}件読み込みました")
+        dic =self.read_dict()
 
         cnt = 0 #翻訳した原文の数
         for idx,org in enumerate(set_org):
@@ -80,15 +100,14 @@ class Translate:
                     try:
                         ret = self.translate(org,Settings.api["api"][org_lang][lang])
                     except Exception as e:
+                        print(f"エラーのため翻訳を中断。{cnt}件の原文を翻訳しました") 
                         if cnt>0:
-                            #途中までの翻訳結果を保存
-                            with open(DICT_SAVE_PATH,"w",encoding="utf-8") as f:
-                                pickle.dump(dic,f)
-                                print(f"エラーのため翻訳を中断。{cnt}件の原文を翻訳しました") 
-                                print(f"途中までの編訳結果を保存しました：{DICT_SAVE_PATH}")
+                            self.write_dict(dic)
                         raise e
                     dic[org][lang]=ret
                     if len(dic[org]) == len(langs):
                         cnt +=1
         print("")
+        if os.path.exists(DICT_SAVE_PATH):
+            os.remove(DICT_SAVE_PATH)
         return dic

@@ -29,10 +29,10 @@ launch-script.pyで参照する
 サンプルファイルをコピーし、必要なら修正する
 
 ## 作業の流れ
-1. 原文ファイルを作成
-2. org2input.pyで入力用excelファイル(input.xlsx)を作成
+1. 原文ファイル（org.txt）を作成
+2. org2input.pyでorg.txtから入力用excelファイル(input.xlsx)を作成
 3. input.xlsxに字幕毎の開始秒、終了秒を記入
-4. input2srt.pyでSRT形式の字幕ファイル(srt.txt)を作成
+4. input2srt.pyでinput.xlsxからSRT形式の字幕ファイル(srt.txt)を作成
 
 ## スクリプト
 ### launch-script.py

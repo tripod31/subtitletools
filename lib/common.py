@@ -15,6 +15,9 @@ class Settings:
             cls.api = read_jsonc(f)
 
 class InputData:
+    """
+    input形式ファイル(input.xlsx)の一行に対応する
+    """
     def __init__(self,index:int,s_hour:int,s_min:int,s_sec:int,e_hour:int,e_min:int,e_sec:int,subtitles:dict):
         """
         引数：

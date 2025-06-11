@@ -2,7 +2,7 @@
 import argparse
 import re
 from datetime import timedelta
-from lib.common import AppException,InputBase
+from lib.common import AppException,InputBase,print_args
 
 """
 input形式excelファイルの秒数に、指定した秒数を加減算
@@ -86,7 +86,7 @@ if __name__ == '__main__':
                         ,help="書き換える秒数の、終了秒数（hh:mm:ss）。この秒数以前の時間を書き換える")
 
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc = Process()
     try:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from lib.common import AppException,InputBase,Settings
+from lib.common import AppException,InputBase,Settings,print_args
 
 """
 input形式からSRT形式の字幕ファイルを出力
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     parser.add_argument('--subtitle_langs'      ,help="出力する言語。カンマ区切りのリスト") 
     
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc = Process()  
     try:

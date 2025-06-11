@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from lib.common import AppException,InputBase,format_timedelta,Settings
+from lib.common import AppException,InputBase,format_timedelta,Settings,print_args
 
 """
 input形式からmp3のlyricタグ用テキストファイルを出力
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     parser.add_argument('out_file'      ,help="出力ファイル") 
     
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc = Process()  
     try:

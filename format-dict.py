@@ -4,6 +4,7 @@ import pandas
 import math
 import openpyxl
 from openpyxl.worksheet.pagebreak import Break
+from lib.common import print_args
 
 """
 辞書csvを読み込む
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     parser.add_argument('rows_num'  ,help="行数＠ページ")
 
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc = Process(args)
     proc.main()

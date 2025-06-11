@@ -1,6 +1,6 @@
 import argparse
 from lib.translate import Translate
-from lib.common import InputData,InputBase,Settings,AppException
+from lib.common import InputData,InputBase,Settings,AppException,print_args
 import pyparsing as pp
 
 """
@@ -80,7 +80,7 @@ if __name__ == '__main__':
                         help='テスト用。APIでの翻訳を行わない')   
     
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc=Process()
     try:

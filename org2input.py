@@ -1,6 +1,6 @@
 import argparse
 from lib.translate import Translate
-from lib.common import Settings,AppException,TIME_COLUMNS
+from lib.common import Settings,AppException,TIME_COLUMNS,print_args
 import pandas
 
 """
@@ -73,7 +73,7 @@ if __name__ == '__main__':
                         action="store_true",
                         help='テスト用。翻訳でAPIを呼び出さない')
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc=Process()
     try:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from lib.common import AppException,Settings
+from lib.common import AppException,Settings,print_args
 from lib.translate import Translate
 import pandas
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
                         action="store_true",
                         help='テスト用。APIでの翻訳を行わない')
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc = Process()
     try:

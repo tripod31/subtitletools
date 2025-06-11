@@ -271,5 +271,14 @@ def read_jsonc(f):
     re_text = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)    # コメントを削除
     return json.loads(re_text)
 
+def print_args(args):
+    """
+    プログラムの引数を表示
+    """
+    arr = []
+    for k,v in vars(args).items():
+        arr.append(f"{k} = {v}")    
+    print(f"引数：{" , ".join(arr)}")
+
 #モジュール初期化
 Settings.init()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from lib.common import InputData,InputBase,Settings
+from lib.common import InputData,InputBase,Settings,print_args
 import pyparsing as pp
 
 """
@@ -66,7 +66,7 @@ if __name__ == '__main__':
         help="入力SRTファイルの言語のリスト。カンマ区切り。省略時はconfig/api.jsoncのsubtitle_langsを使用")
         
     args = parser.parse_args()
-    print(f"引数：{args}")
+    print_args(args)
 
     proc = Process()
     proc.main()

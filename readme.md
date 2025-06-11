@@ -97,7 +97,8 @@ positional arguments:
 ### srt2input.py
 SRT形式ファイル→excelのinput形式ファイルに変換  
 連番は無視して1から振り直す  
-開始/終了秒で秒以下は無視
+開始/終了秒で秒以下は無視  
+字幕文字列は１行が一つの言語に対応する  
 ```
 usage: srt2input.py [-h] [--subtitle_langs SUBTITLE_LANGS] in_file out_excel_file
 

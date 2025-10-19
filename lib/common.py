@@ -275,10 +275,8 @@ def print_args(args):
     """
     プログラムの引数を表示
     """
-    arr = []
-    for k,v in vars(args).items():
-        arr.append(f"{k} = {v}")    
-    print(f"引数：{" , ".join(arr)}")
+    arr = [f"{k} = {v}" for k,v in vars(args).items()]    
+    print(f"引数：\n{"\n".join(arr)}")
 
 #モジュール初期化
 Settings.init()

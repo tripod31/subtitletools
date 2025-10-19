@@ -111,6 +111,20 @@ options:
   --subtitle_langs SUBTITLE_LANGS
                         入力SRTファイルの言語のリスト。カンマ区切り。省略時はconfig/api.jsoncのsubtitle_langsを使用
 ```
+
+### srt2vtt.py
+srt形式からvtt形式に変換
+```
+usage: srt2vtt.py [-h] in_file out_file
+
+positional arguments:
+  in_file     入力SRT形式ファイル
+  out_file    出力VTT形式ファイル
+
+options:
+  -h, --help  show this help message and exit
+```
+
 ### addsec2input.py
 input形式の中の開始秒、終了秒に指定秒を加える  
 ```

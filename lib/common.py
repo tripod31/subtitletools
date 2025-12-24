@@ -1,5 +1,4 @@
 from datetime import timedelta
-from collections import namedtuple
 import pandas
 import math
 import numpy as np
@@ -8,6 +7,35 @@ import json
 
 #input.xlsxの開始/終了秒の列名
 TIME_COLUMNS=["s_hour","s_min","s_sec","e_hour","e_min","e_sec"]
+def format_timedelta(td:timedelta)->str:
+    """
+    引数：
+    td: timedelta
+    戻り値：
+    "MM:SS"
+    """
+    hour = int(td.seconds /(60*60))
+    min = int((td.seconds % (60*60))/60)
+    sec = int(td.seconds % 60)
+    return f"{hour:02}:{min:02}:{sec:02}"
+
+class AppException(Exception):
+    pass
+
+def read_jsonc(f):
+    """
+    jsonc（コメント付きjson）ファイルを読み込む
+    """
+    text = f.read()
+    re_text = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)    # コメントを削除
+    return json.loads(re_text)
+
+def print_args(args):
+    """
+    プログラムの引数を表示
+    """
+    arr = [f"{k} = {v}" for k,v in vars(args).items()]    
+    print(f"引数：\n{"\n".join(arr)}")
 
 class Settings:
     api = None  #config/api.jsoncを読み込む
@@ -43,6 +71,8 @@ class InputData:
         line_time = f"{format_timedelta(self.start)},000 --> {format_timedelta(self.end)},000"
         ret.append(line_time)
         for lang in langs:
+            if not lang in self.subtitles.keys():
+                raise AppException(f"入力データに{lang}がありません")
             ret.append(self.subtitles[lang])
         return ret
     
@@ -246,37 +276,6 @@ class InputBase():
 
         #ファイル出力
         self.out_file() #子クラスで実装
-
-
-def format_timedelta(td:timedelta)->str:
-    """
-    引数：
-    td: timedelta
-    戻り値：
-    "MM:SS"
-    """
-    hour = int(td.seconds /(60*60))
-    min = int((td.seconds % (60*60))/60)
-    sec = int(td.seconds % 60)
-    return f"{hour:02}:{min:02}:{sec:02}"
-
-class AppException(Exception):
-    pass
-
-def read_jsonc(f):
-    """
-    jsonc（コメント付きjson）ファイルを読み込む
-    """
-    text = f.read()
-    re_text = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)    # コメントを削除
-    return json.loads(re_text)
-
-def print_args(args):
-    """
-    プログラムの引数を表示
-    """
-    arr = [f"{k} = {v}" for k,v in vars(args).items()]    
-    print(f"引数：\n{"\n".join(arr)}")
 
 #モジュール初期化
 Settings.init()

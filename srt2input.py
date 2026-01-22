@@ -10,10 +10,6 @@ SRT形式ファイルからinput形式excelファイルに変換
 class Process(InputBase):
     def __init__(self):
         super().__init__()
-        if args.subtitle_langs:
-            self.subtitle_langs = args.subtitle_langs.split(",")
-        else:
-            self.subtitle_langs = Settings.api["subtitle_langs"]
 
     def read_srt(self):
         """
@@ -36,6 +32,7 @@ class Process(InputBase):
 
         res = parser.search_string(data)
 
+        subtitle_langs = args.subtitle_langs.split(",")
         #InputDataのリストに読み込む
         for idx,data in enumerate(res):
             s_hour  = int(data["s_hour"])
@@ -46,7 +43,7 @@ class Process(InputBase):
             e_sec   = int(data["e_sec"])
             subtitles  = data["subtitles"].as_list()
             dic = {}
-            for idx,lang in enumerate(self.subtitle_langs):
+            for idx,lang in enumerate(subtitle_langs):
                 dic[lang] = subtitles[idx]
             data = InputData(index=idx+1,
                              s_hour=s_hour,s_min=s_min,s_sec=s_sec,
@@ -62,8 +59,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('in_file'       ,help="入力SRTファイル")    
     parser.add_argument('out_excel_file',help="出力excelファイル")
-    parser.add_argument('--subtitle_langs',
-        help="入力SRTファイルの言語のリスト。カンマ区切り。省略時はconfig/api.jsoncのsubtitle_langsを使用")
+    parser.add_argument('subtitle_langs',
+                        help="入力SRTファイルの言語のリスト。カンマ区切り")
         
     args = parser.parse_args()
     print_args(args)

@@ -21,8 +21,7 @@ class Process:
         #入力CSV読み込み
         df = pandas.read_csv(
                 self.args.in_file,
-                header=None,
-                na_filter=False #空白セルをnanに変換しない
+                header=None
                 )
         in_arr = df.to_numpy().tolist()
         

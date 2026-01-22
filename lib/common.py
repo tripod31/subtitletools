@@ -59,7 +59,7 @@ class InputData:
         self.end         = timedelta(hours=e_hour,minutes=e_min,seconds=e_sec)
         self.subtitles = subtitles
 
-    def to_srt(self,langs:list)->list:
+    def to_srt(self,langs:list|None=None)->list:
         """
         引数：
             langs:  出力する言語のリスト
@@ -70,10 +70,14 @@ class InputData:
         ret.append(f"{self.index}") #通し番号
         line_time = f"{format_timedelta(self.start)},000 --> {format_timedelta(self.end)},000"
         ret.append(line_time)
-        for lang in langs:
-            if not lang in self.subtitles.keys():
-                raise AppException(f"入力データに{lang}がありません")
-            ret.append(self.subtitles[lang])
+        if langs is not None:
+            for lang in langs:
+                if not lang in self.subtitles.keys():
+                    raise AppException(f"入力データに{lang}がありません")
+                ret.append(self.subtitles[lang])
+        else:
+            #出力する言語のリストが指定されない場合、全て出力
+            ret.extend(self.subtitles.values())
         return ret
     
     def to_dict(self)->dict:
@@ -100,6 +104,8 @@ class InputBase():
 
     def __init__(self):
         self.in_data_arr=[] #InputDataのリスト
+        self.excel_langs=[] #excelファイルの列名から言語のリストを得る
+        self.subtitle_langs=None  #出力する字幕の言語リスト
 
     def read_excel(self,args):
         """
@@ -113,6 +119,7 @@ class InputBase():
         """
         #excelファイル読み込み
         df = pandas.read_excel(args.in_excel_file,header=0)
+        self.excel_langs=list(df.columns)[6:]
         
         # 開始秒が空のデータを埋める
         for idx,row in df.iterrows():
@@ -170,9 +177,9 @@ class InputBase():
         e_sec   = row["e_sec"]
         subtitles = {}
         for idx in range(6 ,len(row)):
-            col = row.index[idx]    #列名=言語
+            lang = row.index[idx]    #言語=列名
             #字幕文が空の場合、長さ0の文字列をセット
-            subtitles[col] = row.iloc[idx] if not pandas.isnull(row.iloc[idx]) else ""  
+            subtitles[lang] = row.iloc[idx] if not pandas.isnull(row.iloc[idx]) else ""  
 
         data = InputData(index+1,
                          s_hour=int(s_hour),s_min=int(s_min),s_sec=int(s_sec),
@@ -268,8 +275,18 @@ class InputBase():
         input形式excelを読み込んでファイルを出力する
         テンプレートメソッド
         """
+        if args.subtitle_langs is not None:
+            self.subtitle_langs = args.subtitle_langs.split(",")
+
         #excelファイル読み込み
         self.read_excel(args)
+
+        #excelから読み込んだ言語と引数で指定された出力言語を比較
+        if self.subtitle_langs is not None:
+            langs_missing = [ lang for lang in self.subtitle_langs if not lang in self.excel_langs]
+            if len(langs_missing)>0:
+                #excelファイルの言語以外が出力言語に指定されている場合はエラー
+                raise AppException(f"excelファイルの言語以外が出力言語に指定されている：{','.join(langs_missing)}")
 
         #入力データチェック        
         self.check_data()

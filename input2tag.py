@@ -18,8 +18,12 @@ class Process(InputBase):
         lines = []
         with open(args.out_file,"w",encoding='utf-8') as f:
             for data in self.in_data_arr:
-                for lang in Settings.api["subtitle_langs"]:
-                    lines.append( f"[{format_timedelta(data.start)}.000]{data.subtitles[lang]}")
+                if self.subtitle_langs is not None:
+                    for lang in self.subtitle_langs:
+                        lines.append( f"[{format_timedelta(data.start)}.000]{data.subtitles[lang]}")
+                else:
+                     for lyric in data.subtitles.values():
+                        lines.append( f"[{format_timedelta(data.start)}.000]{lyric}")                   
             f.write("\n".join(lines))
         print(f"{args.out_file}：出力しました")
 
@@ -27,6 +31,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('in_excel_file' ,help="入力excelファイル")    
     parser.add_argument('out_file'      ,help="出力ファイル") 
+    parser.add_argument('--subtitle_langs'      ,help="出力する言語。カンマ区切りのリスト") 
     
     args = parser.parse_args()
     print_args(args)

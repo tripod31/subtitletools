@@ -89,9 +89,8 @@ positional arguments:
   out_file       出力SRT形式ファイル
 
 options:
-  -h, --help            show this help message and exit
   --subtitle_langs SUBTITLE_LANGS
-                        出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
+                 出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
 ```
 
 ### input2txt.py
@@ -104,6 +103,11 @@ usage: input2txt.py [-h] in_excel_file out_file
 positional arguments:
   in_excel_file  入力excelファイル
   out_file       出力ファイル
+
+options:
+  --subtitle_langs SUBTITLE_LANGS
+                 出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
+
 ```
 
 ### input2tag.py
@@ -116,6 +120,10 @@ usage: input2tag.py [-h] in_excel_file out_file
 positional arguments:
   in_excel_file  入力excelファイル
   out_file       出力ファイル
+
+options:
+  --subtitle_langs SUBTITLE_LANGS
+                 出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
 ```
 
 ### srt2input.py
@@ -131,8 +139,10 @@ usage: srt2input.py [-h] [--subtitle_langs SUBTITLE_LANGS] in_file out_excel_fil
 positional arguments:
   in_file         入力SRTファイル
   out_excel_file  出力excelファイル
-  subtitle_langs SUBTITLE_LANGS
+  --subtitle_langs SUBTITLE_LANGS
                   入力SRTファイルの言語のリスト。カンマ区切り
+                  入力ファイルの字幕の行数が指定言語の数より多ければ無視される
+                  省略時は言語名をL1,L2…とする
 
 options:
   -h, --help            show this help message and exit

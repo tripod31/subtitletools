@@ -2,6 +2,7 @@
 /.idea
 /data
 /tools
+/unused
 config/*.jsonc
 config/*.json
 *.pyc

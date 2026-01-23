@@ -46,11 +46,6 @@ launch-script.pyで参照する
 
 ## スクリプト
 
-### launch-script.py
-
-各スクリプトを選択して起動するGUIプログラム  
-入出力ファイルはdata/ディレクトリを作成してそこに置く
-
 ### org2input.py
 
 原文ファイルから、excelのinput形式ファイルを作成する。翻訳を追加する。
@@ -148,21 +143,6 @@ options:
   -h, --help            show this help message and exit
 ```
 
-### srt2vtt.py
-
-srt形式からvtt形式に変換
-
-```text
-usage: srt2vtt.py [-h] in_file out_file
-
-positional arguments:
-  in_file     入力SRT形式ファイル
-  out_file    出力VTT形式ファイル
-
-options:
-  -h, --help  show this help message and exit
-```
-
 ### addsec2input.py
 
 input形式の中の開始秒、終了秒に指定秒を加える  
@@ -181,30 +161,6 @@ options:
   --start_sec START_SEC
                         書き換える秒数の、開始秒数（hh:mm:ss）。この秒数以後の時間を書き換える
   --end_sec END_SEC     書き換える秒数の、終了秒数（hh:mm:ss）。この秒数以前の時間を書き換える
-```
-
-### addlang2input.py
-
-input形式excelファイルに、翻訳した言語の列を追加  
-config/api.jsonの"translate_langs"の言語の中で、input.xlsxに無い言語があれば、その言語の列を追加する  
-追加した列に翻訳を入れる  
-
-```text
-usage: addlang2input.py [-h] in_excel_file out_excel_file
-
-positional arguments:
-  in_excel_file   入力excelファイル
-  out_excel_file  出力excelファイル
-```
-
-### fill-input.py
-
-input形式excelファイルの、翻訳が抜けている箇所に翻訳を追加する
-
-```text
-positional arguments:
-  in_excel_file   入力excelファイル
-  out_excel_file  出力excelファイル
 ```
 
 ## 各ファイルの形式
@@ -250,26 +206,6 @@ excelファイル。
 ```text
 1
 00:00:00,000 --> 00:00:00,000
-文字列1
-文字列2
-
-2
-00:00:00,000 --> 00:00:00,000
-文字列1
-文字列2
-```
-
-### VTT形式
-
-一般的な字幕フォーマット。youtube、VLCメディアプレイヤー、penguin subtitle playerなどで使える。  
-形式：通番、開始秒(hh:mm:ss.000)-->終了秒、文字列、改行区切り  
-連番は無くてもOK。無視される
-
-```text
-WEBVTT
-
-1
-00:00:00.000 --> 00:00:00.000
 文字列1
 文字列2
 

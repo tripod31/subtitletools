@@ -47,15 +47,15 @@ class Process(InputBase):
             e_sec   = int(data["e_sec"])
             subtitles  = data["subtitles"].as_list()
 
-            #字幕の行数＝言語の数が一致しているかチェック
+            if args.subtitle_langs is not None and len(subtitles)!=len(subtitle_langs):
+                raise AppException(f"字幕の行数が指定された言語数と異なる：NO={no}")
+
+            #字幕の行数＝言語の数が前のデータと同じかチェック
             if num_langs is None:
                 num_langs = len(subtitles)
             else:
                 if len(subtitles) != num_langs:
-                    raise AppException(f"字幕の行数が以前とちがう：NO={no}")
-
-            if args.subtitle_langs is not None and len(subtitles)<len(subtitle_langs):
-                raise AppException(f"字幕の行数が指定された言語数より少ない：NO={no}")
+                    raise AppException(f"字幕の行数が前のデータとちがう：NO={no}")
             
             dic = {}
             if args.subtitle_langs is not None:

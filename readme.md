@@ -57,6 +57,7 @@ usage: trans2input.py [-h] in_file out_excel_file
 positional arguments:
   in_file         原文ファイル
   out_excel_file  出力excelファイル。input形式
+  --no_trans      指定された場合、翻訳を行わない
 ```
 
 ### trans2input.py
@@ -85,7 +86,7 @@ positional arguments:
 
 options:
   --subtitle_langs SUBTITLE_LANGS
-                 出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
+    出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
 ```
 
 ### input2txt.py
@@ -101,7 +102,7 @@ positional arguments:
 
 options:
   --subtitle_langs SUBTITLE_LANGS
-                 出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
+    出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
 
 ```
 
@@ -118,7 +119,7 @@ positional arguments:
 
 options:
   --subtitle_langs SUBTITLE_LANGS
-                 出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
+    出力する言語。カンマ区切りのリスト。省略時はexcelの言語をすべて出力する
 ```
 
 ### srt2input.py
@@ -135,9 +136,8 @@ positional arguments:
   in_file         入力SRTファイル
   out_excel_file  出力excelファイル
   --subtitle_langs SUBTITLE_LANGS
-                  入力SRTファイルの言語のリスト。カンマ区切り
-                  入力ファイルの字幕の行数が指定言語の数より多ければ無視される
-                  省略時は言語名をL1,L2…とする
+    入力SRTファイルの言語のリスト。カンマ区切り
+    省略時は言語名をL1,L2…とする
 
 options:
   -h, --help            show this help message and exit
@@ -159,8 +159,9 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   --start_sec START_SEC
-                        書き換える秒数の、開始秒数（hh:mm:ss）。この秒数以後の時間を書き換える
-  --end_sec END_SEC     書き換える秒数の、終了秒数（hh:mm:ss）。この秒数以前の時間を書き換える
+    書き換える秒数の、開始秒数（hh:mm:ss）。この秒数以後の時間を書き換える
+  --end_sec END_SEC
+    書き換える秒数の、終了秒数（hh:mm:ss）。この秒数以前の時間を書き換える
 ```
 
 ## 各ファイルの形式

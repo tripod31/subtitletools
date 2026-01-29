@@ -27,7 +27,10 @@ def read_jsonc(f):
     jsonc（コメント付きjson）ファイルを読み込む
     """
     text = f.read()
-    re_text = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)    # コメントを削除
+    # コメントを削除
+    # (?<!:)//.*'
+    # urlのhttp://にマッチさせない
+    re_text = re.sub(r'/\*[\s\S]*?\*/|(?<!:)//.*', '', text)    
     return json.loads(re_text)
 
 def print_args(args):

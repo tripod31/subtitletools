@@ -1,6 +1,6 @@
 import argparse
 from lib.translate import Translate
-from lib.common import Settings,AppException,TIME_COLUMNS,print_args
+from lib.common import Settings,AppException,TIME_COLUMNS,print_args,df2excel
 import pandas
 
 """
@@ -59,7 +59,7 @@ class Process():
             self.translate()
 
         df = pandas.DataFrame(self.rows)
-        df.to_excel(args.out_excel_file,index=False)
+        df2excel(df,args.out_excel_file)
         print(f"出力しました：{args.out_excel_file}")
 
 if __name__ == '__main__':

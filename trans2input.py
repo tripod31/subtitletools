@@ -1,12 +1,15 @@
-import argparse
-from lib.translate import Translate
-from lib.common import InputData,InputBase,Settings,AppException,print_args
-import pyparsing as pp
-
 """
 文字起こしファイルからexcelのinput形式ファイルを作成
 翻訳を追加
 """
+
+import argparse
+import pyparsing as pp
+import os
+import sys
+from lib.translate import Translate
+from lib.common import InputData,InputBase,Settings,AppException,print_args
+
 class Process(InputBase):
     def __init__(self):
         super().__init__()
@@ -81,6 +84,11 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     print_args(args)
+
+    if os.path.exists(args.out_excel_file):
+        ans = input(f"{args.out_excel_file}：上書きしますか？(Yes:y)")
+        if ans != 'y':
+            sys.exit()
 
     proc=Process()
     try:

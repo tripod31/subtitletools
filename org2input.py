@@ -1,12 +1,15 @@
 import argparse
+import pandas
+import os
+import sys
 from lib.translate import Translate
 from lib.common import Settings,AppException,TIME_COLUMNS,print_args,df2excel
-import pandas
 
 """
 原文からexcelのinput形式ファイルを作成
 翻訳を追加
 """
+
 class Process():
     #開始秒が未入力のため、InputBaseクラスは継承しない
 
@@ -74,6 +77,11 @@ if __name__ == '__main__':
                         help='テスト用。翻訳でAPIを呼び出さない')
     args = parser.parse_args()
     print_args(args)
+
+    if os.path.exists(args.out_excel_file):
+        ans = input(f"{args.out_excel_file}：上書きしますか？(Yes:y)")
+        if ans != 'y':
+            sys.exit()
 
     proc=Process()
     try:

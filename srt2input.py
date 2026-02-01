@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import argparse
+import os
+import sys
 from lib.common import InputData,InputBase,print_args,AppException
 import pyparsing as pp
 
@@ -86,6 +88,11 @@ if __name__ == '__main__':
         
     args = parser.parse_args()
     print_args(args)
+    
+    if os.path.exists(args.out_excel_file):
+        ans = input(f"{args.out_excel_file}：上書きしますか？(Yes:y)")
+        if ans != 'y':
+            sys.exit()
 
     proc = Process()
     try:

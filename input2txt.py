@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import argparse
-from lib.common import AppException,InputBase,format_timedelta,Settings,print_args
 
 """
 input形式からブログ用のテキストファイルを出力
 """
+
+import argparse
+from lib.common import AppException,InputBase,format_timedelta,Settings,print_args
 
 class Process(InputBase):
     def __init__(self):

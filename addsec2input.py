@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-import argparse
-import re
-from datetime import timedelta
-from lib.common import AppException,InputBase,print_args
 
 """
 input形式excelファイルの秒数に、指定した秒数を加減算
 """
+
+import argparse
+import re
+from datetime import timedelta
+from lib.common import AppException,InputBase,print_args
 
 class Process(InputBase):
     def __init__(self):
@@ -23,7 +24,7 @@ class Process(InputBase):
             m = re.match(r"(\d+):(\d+):(\d+)",args.end_sec)
             if not m:
                 raise AppException(f"end_sec:秒数の形式がhh:mm:ssでない：{args.end_sec}")
-            self.end_sec = timedelta(hours=int([1]),minutes=int(m[2]),seconds=int(m[3]))
+            self.end_sec = timedelta(hours=int(m[1]),minutes=int(m[2]),seconds=int(m[3]))
         else:
             self.end_sec = None
 

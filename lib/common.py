@@ -83,7 +83,7 @@ class AppException(Exception):
     pass
 
 class Settings:
-    api = None  #config/api.jsoncを読み込む
+    api = {}  #config/api.jsoncを読み込む
 
     @classmethod
     def init(cls):

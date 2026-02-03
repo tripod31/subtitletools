@@ -28,6 +28,8 @@ def count_zen_han(s: str) -> int:
     :return: 文字列の長さ
     :rtype: int
     """
+    if pandas.isna(s):
+        return 0
     length = 0
     for ch in s:
         # East Asian Width が 'F' (全角), 'W' (全角), 'A' (曖昧) の場合は2

@@ -3,7 +3,8 @@ import pandas
 import os
 import sys
 from lib.translate import Translate
-from lib.common import Settings,AppException,TIME_COLUMNS,print_args,df2excel
+from lib.common import Settings,AppException,TIME_COLUMNS,print_args
+from lib.yoshi import df2excel
 
 """
 原文からexcelのinput形式ファイルを作成

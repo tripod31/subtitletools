@@ -28,8 +28,6 @@ def count_zen_han(s: str) -> int:
     :return: 文字列の長さ
     :rtype: int
     """
-    if pandas.isna(s):
-        return 0
     length = 0
     for ch in s:
         # East Asian Width が 'F' (全角), 'W' (全角), 'A' (曖昧) の場合は2
@@ -55,7 +53,7 @@ def df2excel(df,excel_path):
         # 列幅をデータの長さに合わせる
         for col_idx, col in enumerate(df.columns, 1):
             max_length = max(
-                df[col].astype(str).map(count_zen_han).max(),
+                df[col].dropna().astype(str).map(count_zen_han).max(),
                 count_zen_han(col)
             )
             ws.column_dimensions[get_column_letter(col_idx)].width = max_length + col_width_margin

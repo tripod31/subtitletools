@@ -14,7 +14,7 @@ SRT形式の字幕ファイルを作成する。直接SRT形式で作成する�
 
 ### config/api.jsonc
 
-サンプルファイルはconfig/sample/api.jsonc  
+サンプルファイルはsample/config/api.jsonc  
 サンプルファイルをコピーして値を修正する  
 みんなの自動翻訳のapiを使用するための情報を設定する。  
 
@@ -23,19 +23,6 @@ SRT形式の字幕ファイルを作成する。直接SRT形式で作成する�
 |NAME|ログイン名|
 |KEY|ログインして調べる|  
 |SECRET|ログインして調べる|
-
-### data/ディレクトリを作成
-
-launch-script.pyを使う場合に必要  
-launch-script.pyで参照する  
-入出力ファイルを置くディレクトリ
-
-### config/launch_settings.jsonc
-
-launch-script.pyを使う場合に必要  
-launch-script.pyで参照する  
-サンプルファイルはconfig/sample/launch_settings.jsonc  
-サンプルファイルをコピーし、必要なら修正する
 
 ## 作業の流れ
 

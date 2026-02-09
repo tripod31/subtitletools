@@ -12,11 +12,6 @@
     
     // 翻訳先言語
     "translate_langs":  ["eng","jp"], 
-    //"translate_langs":  [],   // デバッグ用。翻訳をしない
-
-    // SRTに出力する言語
-    "subtitle_langs":   ["pt","jp"],   
-    //"subtitle_langs":   ["pt","eng","jp"],
 
     // みんなの自動翻訳：https://mt-auto-minhon-mlt.ucri.jgn-x.jp/
     // にログインして以下の値を調べる

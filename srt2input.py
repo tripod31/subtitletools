@@ -21,7 +21,6 @@ class Process(InputBase):
             data = f.read()
 
         #parser作成
-        #no      = pp.LineStart()+pp.Word(pp.nums).set_results_name("no")+pp.LineEnd()
         no      = pp.Word(pp.nums).set_results_name("no")+pp.LineEnd()
         start   = pp.Word(pp.nums)("s_hour")+pp.Suppress(":")+pp.Word(pp.nums)("s_min")+pp.Suppress(":")+ \
             pp.Word(pp.nums)("s_sec")+pp.Suppress(",")+pp.Word(pp.nums).suppress()
@@ -30,24 +29,27 @@ class Process(InputBase):
         time_span = start + pp.Suppress("-->") + end
         subtitles  = pp.OneOrMore(pp.Word(pp.pyparsing_unicode.printables+" "),stop_on=no).set_results_name("subtitles")
 
-        parser = no + time_span+ subtitles
-
-        res = parser.search_string(data)
+        no.set_parse_action(lambda tokens:print(f"\r処理中字幕NO：{tokens[0]}",end=''))
+        block = no + time_span+ subtitles
+        parser = block
+        res = parser.search_string(data)    
+        #print(res.dump())
+        print("\r")
 
         if args.subtitle_langs is not None:
             subtitle_langs = args.subtitle_langs.split(",")
         
         num_langs = None    #言語の数
         #InputDataのリストに読み込む
-        for idx,data in enumerate(res):
-            no =  int(data["no"])
-            s_hour  = int(data["s_hour"])
-            s_min   = int(data["s_min"])
-            s_sec   = int(data["s_sec"])
-            e_hour  = int(data["e_hour"])
-            e_min   = int(data["e_min"])
-            e_sec   = int(data["e_sec"])
-            subtitles  = data["subtitles"].as_list()
+        for idx,block in enumerate(res):
+            no =  int(block["no"])
+            s_hour  = int(block["s_hour"])
+            s_min   = int(block["s_min"])
+            s_sec   = int(block["s_sec"])
+            e_hour  = int(block["e_hour"])
+            e_min   = int(block["e_min"])
+            e_sec   = int(block["e_sec"])
+            subtitles  = block["subtitles"].as_list()
 
             if args.subtitle_langs is not None and len(subtitles)!=len(subtitle_langs):
                 raise AppException(f"字幕の行数が指定された言語数と異なる：NO={no}")
@@ -68,11 +70,11 @@ class Process(InputBase):
                     lang = f"L{idx+1}"
                     dic[lang] = subtitles[idx]
 
-            data = InputData(index=idx+1,
+            idata = InputData(index=idx+1,
                              s_hour=s_hour,s_min=s_min,s_sec=s_sec,
                              e_hour=e_hour,e_min=e_min,e_sec=e_sec,
                              subtitles=dic)
-            self.in_data_arr.append(data)
+            self.in_data_arr.append(idata)
 
     def main(self):
         self.read_srt()

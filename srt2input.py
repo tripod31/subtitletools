@@ -21,7 +21,7 @@ class Process(InputBase):
             data = f.read()
 
         #parser作成
-        no      = pp.Word(pp.nums).set_results_name("no")+pp.LineEnd()
+        no      = pp.Word(pp.nums).set_results_name("no")+pp.LineEnd().suppress()
         start   = pp.Word(pp.nums)("s_hour")+pp.Suppress(":")+pp.Word(pp.nums)("s_min")+pp.Suppress(":")+ \
             pp.Word(pp.nums)("s_sec")+pp.Suppress(",")+pp.Word(pp.nums).suppress()
         end     = pp.Word(pp.nums)("e_hour")+pp.Suppress(":")+pp.Word(pp.nums)("e_min")+pp.Suppress(":")+ \
@@ -30,9 +30,9 @@ class Process(InputBase):
         subtitles  = pp.OneOrMore(pp.Word(pp.pyparsing_unicode.printables+" "),stop_on=no).set_results_name("subtitles")
 
         no.set_parse_action(lambda tokens:print(f"\r処理中字幕NO：{tokens[0]}",end=''))
-        block = no + time_span+ subtitles
-        parser = block
-        res = parser.search_string(data)    
+        block = pp.Group(no + time_span+ subtitles)
+        parser = pp.OneOrMore(block)
+        res = parser.parse_string(data)    
         #print(res.dump())
         print("\r")
 

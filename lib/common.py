@@ -2,6 +2,7 @@ from datetime import timedelta
 import pandas
 import math
 import numpy as np
+from pathlib import Path
 from lib.yoshi import df2excel,read_jsonc
 
 #input.xlsxの開始/終了秒の列名
@@ -34,7 +35,8 @@ class Settings:
 
     @classmethod
     def init(cls):
-        with open("config/api.jsonc",encoding='utf-8') as f:
+        conf_path = Path(__file__).resolve().parent.parent / "config" / "api.jsonc"
+        with open(conf_path,encoding='utf-8') as f:
             cls.api = read_jsonc(f)
 
 class InputData:

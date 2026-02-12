@@ -14,7 +14,7 @@ SRT形式の字幕ファイルを作成する。直接SRT形式で作成する�
 
 ### config/api.jsonc
 
-サンプルファイルはsample/config/api.jsonc  
+サンプルファイルはconfig/sample/api.jsonc  
 サンプルファイルをコピーして値を修正する  
 みんなの自動翻訳のapiを使用するための情報を設定する。  
 

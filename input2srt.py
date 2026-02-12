@@ -5,6 +5,8 @@ input形式からSRT形式の字幕ファイルを出力
 """
 
 import argparse
+import os
+import sys
 from lib.common import AppException,InputBase,print_args
 
 class Process(InputBase):
@@ -38,6 +40,12 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     print_args(args)
+    
+    if os.path.exists(args.out_file):
+        ans = input(f"{args.out_file}：上書きしますか？(Yes:y)")
+        if ans != 'y':
+            print("中止します")
+            sys.exit()
 
     proc = Process()  
     try:

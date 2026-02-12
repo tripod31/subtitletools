@@ -94,6 +94,7 @@ if __name__ == '__main__':
     if os.path.exists(args.out_excel_file):
         ans = input(f"{args.out_excel_file}：上書きしますか？(Yes:y)")
         if ans != 'y':
+            print("中止します")
             sys.exit()
 
     proc = Process()

@@ -2,64 +2,104 @@
 import argparse
 import os
 import sys
+import re
+from dataclasses import dataclass,field
 from lib.common import InputData,InputBase,print_args,AppException
-import pyparsing as pp
 
 """
 SRT形式ファイルからinput形式excelファイルに変換
 """
 
+@dataclass
+class Block:
+    no:int = 0
+    s_hour: int =0
+    s_min:int =0
+    s_sec:int =0
+    e_hour:int =0
+    e_min:int =0
+    e_sec:int =0
+    subtitles:list =field(default_factory=list)
+
 class Process(InputBase):
     def __init__(self):
         super().__init__()
+        self.re_timespan = re.compile(r"(\d{2}):(\d{2}):(\d{2})[\.,]000 --> (\d{2}):(\d{2}):(\d{2})[\.,]000")
+    
+    def parse_block(self,lines):
+        """
+        SRT形式ファイルの１つのブロックをパース
+        """
+        block = Block()
+        #NO行
+        if not lines[0].isdigit():
+            raise AppException(f"データブロックの最初が番号でない：{lines[0]}")
+        block.no = int(lines[0])
 
+        #時間指定行
+        m = self.re_timespan.match(lines[1])
+        if not m:
+            raise AppException(f"データブロックの２行目が時間指定行でない：NO={block.no}：{lines[1]}")
+        block.s_hour    = int(m[1])
+        block.s_min     = int(m[2])
+        block.s_sec     = int(m[3])
+        block.e_hour    = int(m[4])
+        block.e_min     = int(m[5])
+        block.e_sec     = int(m[6])        
+
+        #字幕
+        if len(lines)<=2:
+            raise AppException(f"データブロックに字幕がない：NO={block.no}")
+        block.subtitles=lines[2:]
+
+        return block
+
+    def parse_srt(self):
+        """
+        SRT形式ファイルをパース
+        字幕は改行で区切ってリストで読み込む
+        """
+        with open(args.in_file,encoding='utf-8') as f:
+            lines = f.readlines()
+
+        blocks=[]
+        buf =[]
+        for line in lines:
+            line = line.strip()
+            if len(line) == 0:
+                # 空行
+                if len(buf)>0:
+                   block = self.parse_block(buf)
+                   blocks.append(block)
+                   buf.clear()
+            else:
+                buf.append(line)
+        return blocks
+        
     def read_srt(self):
         """
         SRT形式ファイルをInputDataのリストに読み込む
+        字幕のリストを{言語：字幕}の辞書に変換
         """
-        with open(args.in_file,encoding='utf-8') as f:
-            data = f.read()
-
-        #parser作成
-        no      = pp.Word(pp.nums).set_results_name("no")+pp.LineEnd().suppress()
-        start   = pp.Word(pp.nums)("s_hour")+pp.Suppress(":")+pp.Word(pp.nums)("s_min")+pp.Suppress(":")+ \
-            pp.Word(pp.nums)("s_sec")+pp.Suppress(",")+pp.Word(pp.nums).suppress()
-        end     = pp.Word(pp.nums)("e_hour")+pp.Suppress(":")+pp.Word(pp.nums)("e_min")+pp.Suppress(":")+ \
-            pp.Word(pp.nums)("e_sec")+pp.Suppress(",")+pp.Word(pp.nums).suppress()
-        time_span = start + pp.Suppress("-->") + end
-        subtitles  = pp.OneOrMore(pp.Word(pp.pyparsing_unicode.printables+" "),stop_on=no).set_results_name("subtitles")
-
-        no.set_parse_action(lambda tokens:print(f"\r処理中字幕NO：{tokens[0]}",end=''))
-        block = pp.Group(no + time_span+ subtitles)
-        parser = pp.OneOrMore(block)
-        res = parser.parse_string(data)    
-        #print(res.dump())
-        print("\r")
 
         if args.subtitle_langs is not None:
             subtitle_langs = args.subtitle_langs.split(",")
         
         num_langs = None    #言語の数
         #InputDataのリストに読み込む
-        for idx,block in enumerate(res):
-            no =  int(block["no"])
-            s_hour  = int(block["s_hour"])
-            s_min   = int(block["s_min"])
-            s_sec   = int(block["s_sec"])
-            e_hour  = int(block["e_hour"])
-            e_min   = int(block["e_min"])
-            e_sec   = int(block["e_sec"])
-            subtitles  = block["subtitles"].as_list()
+        blocks = self.parse_srt()
+        for idx,block in enumerate(blocks):
+            subtitles  = block.subtitles
 
             if args.subtitle_langs is not None and len(subtitles)!=len(subtitle_langs):
-                raise AppException(f"字幕の行数が指定された言語数と異なる：NO={no}")
+                raise AppException(f"字幕の行数が指定された言語数と異なる：NO={block.no}")
 
             #字幕の行数＝言語の数が前のデータと同じかチェック
             if num_langs is None:
                 num_langs = len(subtitles)
             else:
                 if len(subtitles) != num_langs:
-                    raise AppException(f"字幕の行数が前のデータとちがう：NO={no}")
+                    raise AppException(f"字幕の行数が前のデータとちがう：NO={block.no}")
             
             dic = {}
             if args.subtitle_langs is not None:
@@ -70,10 +110,15 @@ class Process(InputBase):
                     lang = f"L{idx+1}"
                     dic[lang] = subtitles[idx]
 
-            idata = InputData(index=idx+1,
-                             s_hour=s_hour,s_min=s_min,s_sec=s_sec,
-                             e_hour=e_hour,e_min=e_min,e_sec=e_sec,
-                             subtitles=dic)
+            idata = InputData(
+                            index   =block.no,
+                            s_hour  =block.s_hour,
+                            s_min   =block.s_min,
+                            s_sec   =block.s_sec,
+                            e_hour  =block.e_hour,
+                            e_min   =block.e_min,
+                            e_sec   =block.e_sec,
+                            subtitles=dic)
             self.in_data_arr.append(idata)
 
     def main(self):

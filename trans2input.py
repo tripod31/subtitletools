@@ -7,42 +7,92 @@ import argparse
 import pyparsing as pp
 import os
 import sys
+import re
+from dataclasses import dataclass,field
 from lib.translate import Translate
 from lib.common import InputData,InputBase,Settings,AppException,print_args
+
+@dataclass
+class Block:
+    s_min:int =0
+    s_sec:int =0
+    subtitle:str=""
 
 class Process(InputBase):
     def __init__(self):
         super().__init__()
+        self.re_time = re.compile(r"(\d+):(\d+)")
 
+    def parse_block(self,lines):
+        """
+        文字起こしファイルの１つのブロックをパース
+        """
+        block = Block()
+
+        #時間指定行
+        start = lines[0]
+        m = self.re_time.match(lines[0])
+        if not m:
+            raise AppException(f"データブロックの１行目が時間指定行でない：{lines[0]}")
+        start = lines[0]
+        block.s_min     = int(m[1])
+        block.s_sec     = int(m[2])
+
+        #字幕
+        if len(lines)<=1:
+            raise AppException(f"データブロックに字幕がない：{start}")
+        block.subtitle=" ".join(lines[1:])
+
+        return block
+
+    def parse_srt(self):
+        """
+        SRT形式ファイルをパース
+        字幕は改行で区切ってリストで読み込む
+        """
+        with open(args.in_file,encoding='utf-8') as f:
+            lines = f.readlines()
+
+        blocks=[]
+        buf =[]
+        for line in lines:
+            line = line.strip()
+            if len(line) == 0:
+                continue
+
+            if self.re_time.match(line):
+                # 時間指定行
+                if len(buf)>0:
+                   block = self.parse_block(buf)
+                   blocks.append(block)
+                   buf.clear()
+
+            buf.append(line)
+
+        return blocks
+ 
     def read_file(self):
         """
         文字起こしファイルをInputDataの配列に読み込む
         """
         with open(args.in_file,encoding='utf-8') as f:
-            data = f.read()
+            block = f.read()
 
-        #parser作成
-        #startは通番。原文の中の数字にマッチしないように、LineStart/LineEndで囲む
-        start   = pp.LineStart()+pp.Word(pp.nums)("s_min")+pp.Suppress(":")+ pp.Word(pp.nums)("s_sec")+pp.LineEnd()
-        lyric   = pp.Word(pp.pyparsing_unicode.printables+" ").set_results_name("org")
-
-        parser = start + lyric
-
-        res = parser.search_string(data)
+        blocks = self.parse_srt()
 
         #InputDataのリストに読み込む
-        for idx,data in enumerate(res):
-            s_min   = int(data["s_min"])
-            s_sec   = int(data["s_sec"])
-            subtitles = {Settings.api["org_lang"]:data["org"]}
+        for idx,block in enumerate(blocks):
+            s_min   = block.s_min
+            s_sec   = block.s_sec
+            subtitles = {Settings.api["org_lang"]:block.subtitle}
             for lang in Settings.api["translate_langs"]:
                 subtitles[lang]=""
-            data = InputData(index=idx+1,
+            block = InputData(index=idx+1,
                              s_hour=0,s_min=s_min,s_sec=s_sec,
                              #終了秒には0:0:0を入れておく。excel出力時はnanに変換する（InputBase.out_excel）
                              e_hour=0,e_min=0,e_sec=0,   
                              subtitles=subtitles)
-            self.in_data_arr.append(data)
+            self.in_data_arr.append(block)
 
     def translate(self):
         """
@@ -80,7 +130,7 @@ if __name__ == '__main__':
                         help='翻訳を行わない')    
     parser.add_argument('--test',
                         action="store_true",
-                        help='テスト用。APIでの翻訳を行わない')   
+                        help='テスト用。TranslateクラスでAPIでの翻訳を行わない')   
     
     args = parser.parse_args()
     print_args(args)

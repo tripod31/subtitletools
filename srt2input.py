@@ -33,7 +33,7 @@ class Process(InputBase):
         block = Block()
         #NO行
         if not lines[0].isdigit():
-            raise AppException(f"データブロックの最初が番号でない：{lines[0]}")
+            raise AppException(f"データブロックの１行目が番号でない：{lines[0]}")
         block.no = int(lines[0])
 
         #時間指定行

@@ -41,12 +41,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print_args(args)
     
-    if os.path.exists(args.out_file):
-        ans = input(f"{args.out_file}：上書きしますか？(Yes:y)")
-        if ans != 'y':
-            print("中止します")
-            sys.exit()
-
     proc = Process()  
     try:
         proc.excel2file(args)

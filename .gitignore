@@ -1,0 +1,16 @@
+/.vscode
+/.idea
+/data
+/tools
+/not_used
+config/*.jsonc
+config/*.json
+*.pyc
+*.yaml
+*.jsom
+*.bat
+*.csv
+*.xlsx
+*.ipynb
+*.ps1
+test.py
